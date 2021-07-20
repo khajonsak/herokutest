@@ -9,14 +9,14 @@ const logger = require('morgan');
 const line = require('@line/bot-sdk');
 const cors = require('cors');
 const mysql = require('mysql');
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 
 
 const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'testloginrich'
+    host: 'mysql-khajonsak.alwaysdata.net',
+    user: 'khajonsak',
+    password: '08052543pok',
+    database: 'khajonsak_01'
 
 });
 
@@ -45,6 +45,10 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(cors());
 
+app.get("/", (req, res)=>{
+    res.json({result: "ok", data:[1,2,3,4,5]})
+})
+//U2db00ef1712aa45bf9fcca64c3c82501
 app.get('/api/v1/unlink-richmenu', (req, res) => {    
     client.unlinkRichMenuFromUser("U2db00ef1712aa45bf9fcca64c3c82501");
     res.json({
@@ -57,36 +61,37 @@ app.post('/api/v1/change-richmenu', (req, res) => {
     const { username, password, userId } = req.body;
     console.log(req.body);
     if (username && password){
-        connection.query('SELECT * FROM user  WHERE username = ? AND password = ?', [username, password], function(error, results, fields){
+        connection.query('SELECT * FROM user1  WHERE username = ? AND password = ?', [username, password], function(error, results, fields){
      if(results.length > 0){ 
          req.session.loggeedin = true;
          req.session.userId = userId;
-         client.linkRichMenuToUser(userId, "richmenu-466548b3d9117e842d9441fc8684680d");
-         res.json({
-            data: req.body
-        });
+         client.linkRichMenuToUser(userId, "richmenu-1753cf92786d4090d9590e8545094831");
+     
          console.log('รหัสถูกต้อง')
-        
+         res.end();
      } else if (username && password) {
-        connection.query('SELECT * FROM user1 WHERE username = ? AND password = ?', [username, password], function(error, results, fields){
+        connection.query('SELECT * FROM user2 WHERE username = ? AND password = ?', [username, password], function(error, results, fields){
             if(results.length > 0){ 
                 req.session.loggeedin = true;
                 req.session.userId = userId;
-                client.linkRichMenuToUser(userId, "richmenu-466548b3d9117e842d9441fc8684680d");
+                client.linkRichMenuToUser(userId, "richmenu-9819db4f8376aefb9a37f3da9e99bef2");
           
                 console.log('รหัสถูกต้อง1')
+                res.end();
                 
             } else if (username && password) {
-                connection.query('SELECT * FROM user2 WHERE username = ? AND password = ?', [username, password], function(error, results, fields){
+                connection.query('SELECT * FROM user3 WHERE username = ? AND password = ?', [username, password], function(error, results, fields){
                     if(results.length > 0){ 
                         req.session.loggeedin = true;
                         req.session.userId = userId;
-                        client.linkRichMenuToUser(userId, "richmenu-466548b3d9117e842d9441fc8684680d");
+                        client.linkRichMenuToUser(userId, "richmenu-5eadfafc7f550d4ea14db1a2ec76f56d");
                   
                         console.log('รหัสถูกต้อง2')
+                        res.end();
                     } else {
-                        console.log('รหัสไม่ถูกต้อง2')
-
+                      
+                        res.send('page 3')
+                        res.end();
                     }
 
                 })
@@ -94,13 +99,13 @@ app.post('/api/v1/change-richmenu', (req, res) => {
         })
         
      } 
-     res.end();
+     
  });
 
  }
    
 })
 
-app.listen(PORT, () => {
-    console.log("Ready on port 3000");
-});
+app.listen(PORT, ()=>{
+    console.log(`Serer is running. ${PORT}`)
+})
